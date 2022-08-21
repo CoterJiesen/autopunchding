@@ -44,33 +44,34 @@ public class ManualPunchService extends IntentService {
             punchType = (PunchType) intent.getSerializableExtra(MainActivity.EXTRA_PUNCH_TYPE);
         }
 
-        String punchPositionY = punchType == PunchType.CLOCK_IN ? "920" : "1550";
+        String punchPositionY = punchType == PunchType.CLOCK_IN ? "1153" : "1154";
 
         showToast("打开钉钉");
         startAppLauncher(DD_PACKAGE_NAME);
         SystemClock.sleep(8000);
 
-        showToast("点击中间菜单");
-        clickXY("700", "2325");
-        SystemClock.sleep(5000);
+//        showToast("点击中间菜单");
+//        clickXY("537", "1822");
+//        SystemClock.sleep(5000);
+//
+//        showToast("点击考勤打卡");
+//        clickXY("130", "1113");
+//        SystemClock.sleep(8000);
+//
+//        showToast("点击打卡");
+//        clickXY("528", punchPositionY);
+//        SystemClock.sleep(5000);
 
-        showToast("点击考勤打卡");
-        clickXY("540", "1800");
-        SystemClock.sleep(8000);
-
-        showToast("点击打卡");
-        clickXY("700", punchPositionY);
-        SystemClock.sleep(5000);
-
-        showToast("点击拍照");
-        clickXY("710", "2280");
-        SystemClock.sleep(8000);
-
-        showToast("点击 OK");
-        clickXY("710", "2281");
-        SystemClock.sleep(5000);
+//        showToast("点击拍照");
+//        clickXY("710", "2280");
+//        SystemClock.sleep(8000);
+//
+//        showToast("点击 OK");
+//        clickXY("710", "2281");
+//        SystemClock.sleep(5000);
 
         startAppLauncher(getPackageName());
+        stopApp(DD_PACKAGE_NAME);
 
         // 更新 UI
         String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date());

@@ -13,11 +13,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+//import android.support.v4.app.NotificationCompat;
 
 import com.ajiew.autopunchding.R;
 import com.ajiew.autopunchding.broadcast.AutoStartReceiver;
 import com.ajiew.autopunchding.broadcast.PunchReceiver;
+import com.ajiew.autopunchding.common.Com;
 
 /**
  * author: aaron.chen
@@ -57,9 +58,9 @@ public class KeepRunningService extends Service {
                     NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
             channel.setLightColor(Color.BLUE);
             channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            assert manager != null;
-            manager.createNotificationChannel(channel);
+            NotificationManager managerNo = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            assert managerNo != null;
+            managerNo.createNotificationChannel(channel);
 
             builder = new Notification.Builder(this.getApplicationContext(), NOTIFICATION_CHANNEL_ID)
                     .setContentTitle("AutoPunchDing")
@@ -76,11 +77,17 @@ public class KeepRunningService extends Service {
         registerReceiver(receiver, filter);
 
         // 每 5 分钟跑一次
-        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         int time = 5 * 60 * 1000;
         long triggerAtTime = System.currentTimeMillis() + time;
-        PendingIntent pi = PendingIntent.getBroadcast(this, 0,
-                new Intent(this, AutoStartReceiver.class), 0);
+        addAlarm(0, triggerAtTime);
+
+        return START_STICKY;
+    }
+
+    private void addAlarm(int alarmId,  long triggerAtTime) {
+        Intent myIntent = new Intent(this, AutoStartReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(this, alarmId, myIntent, 0);
+        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         if (manager != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtTime, pi);
@@ -90,8 +97,6 @@ public class KeepRunningService extends Service {
                 manager.set(AlarmManager.RTC_WAKEUP, triggerAtTime, pi);
             }
         }
-
-        return START_STICKY;
     }
 
     @Override

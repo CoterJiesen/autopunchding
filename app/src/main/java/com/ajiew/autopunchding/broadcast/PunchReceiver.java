@@ -3,8 +3,10 @@ package com.ajiew.autopunchding.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.ajiew.autopunchding.service.PunchService;
+import com.ajiew.autopunchding.util.AppUtil;
 
 /**
  * author: aaron.chen
@@ -15,6 +17,7 @@ public class PunchReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(AppUtil.class.getSimpleName(), "PunchReceiver Intent:"+intent.getAction() );
         if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_TIME_TICK))
             context.startService(new Intent(context, PunchService.class));
     }

@@ -63,6 +63,36 @@ public class AppUtil {
     }
 
     /**
+     * 设备截屏保存到sdcard
+     */
+    public static void screencap() {
+        Log.d(AppUtil.class.getSimpleName(), "screencap" );
+        String cmd = String.format("screencap -p /sdcard/screen.png\n");
+        exec(cmd);
+    }
+    /**
+     * 设备截屏保存到sdcard
+     */
+    public static void rmScreencap() {
+        Log.d(AppUtil.class.getSimpleName(), "rm screencap" );
+        String cmd = String.format("rm -r /sdcard/screen.png\n");
+        exec(cmd);
+    }
+
+    /**
+     *  # 熄屏
+     *         self.adbscreen_off = 'adb shell input keyevent 223'
+     *         # 点亮屏幕
+     *         self.adbscreen_on = 'adb shell input keyevent 224'
+     * @param x
+     */
+    public static void inputEvent(String x) {
+        Log.d(AppUtil.class.getSimpleName(), "inputEvent: " + x );
+        String cmd = String.format("input keyevent %s\n", x);
+        exec(cmd);
+    }
+
+    /**
      * 执行 ADB 命令
      *
      * @param cmd adb 命令
