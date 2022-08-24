@@ -16,7 +16,15 @@ public class AppUtil {
 
     private AppUtil() {
     }
-
+    /**
+     * 强退应用
+     *
+     * @param packageName
+     */
+    public static void startDingDing() {
+        String cmd = "monkey -p com.alibaba.android.rimet -c android.intent.category.LAUNCHER 1";
+        exec(cmd);
+    }
     /**
      * 强退应用
      *

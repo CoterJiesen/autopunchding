@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import static com.ajiew.autopunchding.common.Com.DD_PACKAGE_NAME;
 import static com.ajiew.autopunchding.util.AppUtil.clickXY;
 import static com.ajiew.autopunchding.util.AppUtil.close;
 import static com.ajiew.autopunchding.util.AppUtil.inputEvent;
@@ -48,11 +49,6 @@ import static com.ajiew.autopunchding.util.AppUtil.stopApp;
 import static com.ajiew.autopunchding.util.AppUtil.swipe;
 
 public class PunchService extends IntentService {
-
-    /**
-     * 钉钉包名
-     */
-    public static final String DD_PACKAGE_NAME = "com.alibaba.android.rimet";
 
     private PunchType punchType;
     private PowerManager powerManager;
@@ -143,7 +139,7 @@ public class PunchService extends IntentService {
         EmaiUtil.sendMsgImage("打卡通知", "438653638@qq.com");
         SystemClock.sleep(10000);
         stopApp(DD_PACKAGE_NAME);
-//        screenOff();
+        screenOff();
         close();
 
         stopSelf();

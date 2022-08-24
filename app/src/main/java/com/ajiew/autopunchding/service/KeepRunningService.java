@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 //import android.support.v4.app.NotificationCompat;
 
 import com.ajiew.autopunchding.R;
@@ -102,7 +103,7 @@ public class KeepRunningService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        Log.d("KeepRun onDestroy","unregisterReceiver(receiver)");
         stopForeground(true);
         unregisterReceiver(receiver);
     }

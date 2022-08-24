@@ -50,4 +50,12 @@
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/tv_clock_in_time"
         tools:text="下班打卡完毕：2018-09-05 17:10:48" />
+
+    <Button
+        android:id="@+id/button_start_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开启服务"
+        tools:layout_editor_absoluteX="138dp"
+        tools:layout_editor_absoluteY="254dp" />
 </android.support.constraint.ConstraintLayout>
