@@ -1,9 +1,21 @@
-package com.ajiew.autopunchding.util;
+package com.cfy.autopunchding.util;
 
+import static com.cfy.autopunchding.common.Com.DD_PACKAGE_NAME;
+
+import android.os.SystemClock;
 import android.util.Log;
+
+import com.cfy.autopunchding.email.EmaiUtil;
+import com.cfy.autopunchding.event.PunchFinishedEvent;
+import com.cfy.autopunchding.event.PunchType;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * author: aaron.chen
@@ -17,12 +29,11 @@ public class AppUtil {
     private AppUtil() {
     }
     /**
-     * 强退应用
-     *
-     * @param packageName
+     * 启动钉钉
      */
     public static void startDingDing() {
-        String cmd = "monkey -p com.alibaba.android.rimet -c android.intent.category.LAUNCHER 1";
+        Log.d(AppUtil.class.getSimpleName(), "monkey -p com.alibaba.android.rimet -c android.intent.category.LAUNCHER 1");
+        String cmd = "monkey -p com.alibaba.android.rimet -c android.intent.category.LAUNCHER 1 \n";
         exec(cmd);
     }
     /**
@@ -130,4 +141,45 @@ public class AppUtil {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 打卡操作
+     * @param punchType 上、下
+     */
+    public static void playCardOppR9s(PunchType punchType) {
+        // 唤醒屏幕
+        inputEvent("224");
+
+        // 上滑解锁
+        swipe("300", "1000", "300", "500");
+        SystemClock.sleep(10000);
+        // 返回桌面
+        inputEvent("3");
+        SystemClock.sleep(2000);
+
+        startDingDing();
+        SystemClock.sleep(2000);
+
+        clickXY("537", "1822");
+        SystemClock.sleep(20000);
+
+        clickXY("130", "1113");
+        SystemClock.sleep(20000);
+
+        clickXY("528", "1154");
+        SystemClock.sleep(2000);
+        screencap();
+        SystemClock.sleep(20000);
+
+        // 更新 UI
+        String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date());
+        EventBus.getDefault().post(new PunchFinishedEvent(punchType, currentTime));
+
+        EmaiUtil.sendMsgImage("打卡通知", "438653638@qq.com");
+        SystemClock.sleep(20000);
+        stopApp(DD_PACKAGE_NAME);
+        inputEvent("223");
+        close();
+    }
+
 }

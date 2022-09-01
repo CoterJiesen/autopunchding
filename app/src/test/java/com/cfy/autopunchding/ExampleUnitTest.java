@@ -1,4 +1,4 @@
-package com.ajiew.autopunchding;
+package com.cfy.autopunchding;
 
 import org.junit.Test;
 

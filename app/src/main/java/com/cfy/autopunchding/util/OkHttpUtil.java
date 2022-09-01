@@ -1,4 +1,4 @@
-package com.ajiew.autopunchding.util;
+package com.cfy.autopunchding.util;
 
 import android.util.Log;
 
@@ -26,7 +26,7 @@ public class OkHttpUtil
     private static OkHttpUtil okHttpUtil;
 
 
-    public static OkHttpUtil getInstence()
+    public static OkHttpUtil getInstance()
     {
         if (okHttpUtil == null)
         {

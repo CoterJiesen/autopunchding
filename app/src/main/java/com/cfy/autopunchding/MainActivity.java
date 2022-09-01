@@ -1,11 +1,17 @@
-package com.ajiew.autopunchding;
+package com.cfy.autopunchding;
 
-import static com.ajiew.autopunchding.common.Com.EXTRA_PUNCH_TYPE;
+import static com.cfy.autopunchding.common.Com.EXTRA_PUNCH_TYPE;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.NotificationManagerCompat;
 import android.view.View;
@@ -13,11 +19,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ajiew.autopunchding.event.PunchFinishedEvent;
-import com.ajiew.autopunchding.event.PunchType;
-import com.ajiew.autopunchding.service.KeepRunningService;
-import com.ajiew.autopunchding.service.ManualPunchService;
-import com.ajiew.autopunchding.service.NotifyService;
+import com.cfy.autopunchding.event.PunchFinishedEvent;
+import com.cfy.autopunchding.event.PunchType;
+import com.cfy.autopunchding.service.DingService;
+import com.cfy.autopunchding.service.DingService;
+import com.cfy.autopunchding.service.KeepRunningService;
+import com.cfy.autopunchding.service.ManualPunchService;
+import com.cfy.autopunchding.service.NotifyService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -44,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
 
         startService(new Intent(this, KeepRunningService.class));
+        startService(new Intent(this, DingService.class));
     }
 
     @Override
@@ -57,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        requestRoot();
     }
 
     private void initView() {
@@ -121,6 +129,11 @@ public class MainActivity extends AppCompatActivity {
      * 请求权限
      */
     public void requestPermission() {
+        if(!isIgnoringBatteryOptimizations()){
+            requestIgnoreBatteryOptimizations();
+        }else {
+            Toast.makeText(this, "电池白名单已开启", Toast.LENGTH_LONG).show();
+        }
         if (!isNLServiceEnabled()) {
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivityForResult(intent, REQUEST_CODE);
@@ -148,11 +161,28 @@ public class MainActivity extends AppCompatActivity {
      */
     public void toggleNotificationListenerService() {
         PackageManager pm = getPackageManager();
-        pm.setComponentEnabledSetting(new ComponentName(getApplicationContext(), NotifyService.class),
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+//        pm.setComponentEnabledSetting(new ComponentName(getApplicationContext(), NotifyService.class),
+//                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
 
         pm.setComponentEnabledSetting(new ComponentName(getApplicationContext(), NotifyService.class),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
     }
 
+    private boolean isIgnoringBatteryOptimizations() {
+        boolean isIgnoring = false;
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if (powerManager != null) {
+            isIgnoring = powerManager.isIgnoringBatteryOptimizations(getPackageName());
+        }
+        return isIgnoring;
+    }
+    public void requestIgnoreBatteryOptimizations() {
+        try {
+            Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

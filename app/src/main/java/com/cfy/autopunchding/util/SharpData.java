@@ -1,18 +1,15 @@
-package com.ajiew.autopunchding.util;
+package com.cfy.autopunchding.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.ajiew.autopunchding.event.PunchType;
+import com.cfy.autopunchding.event.PunchType;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by zhangxiaoming on 2018/7/26.

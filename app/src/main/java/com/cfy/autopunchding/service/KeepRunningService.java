@@ -1,4 +1,4 @@
-package com.ajiew.autopunchding.service;
+package com.cfy.autopunchding.service;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -16,10 +16,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 //import android.support.v4.app.NotificationCompat;
 
-import com.ajiew.autopunchding.R;
-import com.ajiew.autopunchding.broadcast.AutoStartReceiver;
-import com.ajiew.autopunchding.broadcast.PunchReceiver;
-import com.ajiew.autopunchding.common.Com;
+import com.cfy.autopunchding.R;
+import com.cfy.autopunchding.broadcast.AutoStartReceiver;
+import com.cfy.autopunchding.broadcast.PunchReceiver;
 
 /**
  * author: aaron.chen
@@ -72,10 +71,13 @@ public class KeepRunningService extends Service {
         }
         startForeground(101, builder.build());
 
-        // 闹钟也会发送这个广播
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_TIME_TICK);
-        registerReceiver(receiver, filter);
+        // 闹钟也会发送这个广播 -- 这种退到后台后失效
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(Intent.ACTION_TIME_TICK);
+//        registerReceiver(receiver, filter);
+
+        //这种干脆5分钟来一次    PunchReceiver就不需要了
+//        startService(new Intent(this, PunchService.class));
 
         // 每 5 分钟跑一次
         int time = 5 * 60 * 1000;

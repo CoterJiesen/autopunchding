@@ -1,7 +1,6 @@
-package com.ajiew.autopunchding.email;
+package com.cfy.autopunchding.email;
 
-import static com.ajiew.autopunchding.util.AppUtil.rmScreencap;
-import static com.ajiew.autopunchding.util.AppUtil.screencap;
+import static com.cfy.autopunchding.util.AppUtil.rmScreencap;
 
 import android.os.Environment;
 
@@ -24,7 +23,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeUtility;
 
 /**
  * Created by zhangxiaoming on 2018/7/30.

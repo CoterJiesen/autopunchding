@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ajiew.autopunchding">
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    package="com.cfy.autopunchding">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <application
-        android:name=".BaseApplication"
+        android:name="com.cfy.autopunchding.BaseApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_ding_auto"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_ding_auto"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.cfy.autopunchding.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -24,23 +25,24 @@
         </activity>
         <!--通知监听服务-->
         <service
-            android:name=".service.NotifyService"
+            android:name="com.cfy.autopunchding.service.NotifyService"
             android:enabled="true"
-            android:label="测试通知服务"
+            android:label="自动打卡通知服务"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
         <service
-            android:name=".service.KeepRunningService"
+            android:name="com.cfy.autopunchding.service.KeepRunningService"
             android:enabled="true"
             android:exported="false" />
-        <service android:name=".service.PunchService" />
-        <service android:name=".service.ManualPunchService" />
+        <service android:name="com.cfy.autopunchding.service.PunchService" />
+        <service android:name="com.cfy.autopunchding.service.ManualPunchService" />
+        <service android:name="com.cfy.autopunchding.service.DingService" />
 
         <receiver
-            android:name=".broadcast.AutoStartReceiver"
+            android:name="com.cfy.autopunchding.broadcast.AutoStartReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

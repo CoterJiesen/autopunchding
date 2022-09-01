@@ -1,4 +1,4 @@
-package com.ajiew.autopunchding;
+package com.cfy.autopunchding;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

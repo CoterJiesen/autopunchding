@@ -1,12 +1,12 @@
-package com.ajiew.autopunchding.broadcast;
+package com.cfy.autopunchding.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.ajiew.autopunchding.service.KeepRunningService;
-import com.ajiew.autopunchding.util.AppUtil;
+import com.cfy.autopunchding.service.KeepRunningService;
+import com.cfy.autopunchding.util.AppUtil;
 
 public class AutoStartReceiver extends BroadcastReceiver {
 

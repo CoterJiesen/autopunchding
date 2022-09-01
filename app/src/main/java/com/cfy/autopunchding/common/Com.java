@@ -1,8 +1,6 @@
-package com.ajiew.autopunchding.common;
+package com.cfy.autopunchding.common;
 
 public class Com {
-    public static final String workOnAction = "workOnAction";
-    public static final String workOffAction = "workOffAction";
     //holiday 配置文件
     public static final String holidayFile = "holiday.yaml";
     public static final String emil = "438653638@qq.com";

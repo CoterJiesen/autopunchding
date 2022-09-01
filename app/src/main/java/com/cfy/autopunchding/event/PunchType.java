@@ -1,4 +1,4 @@
-package com.ajiew.autopunchding.event;
+package com.cfy.autopunchding.event;
 
 /**
  * author: aaron.chen

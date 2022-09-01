@@ -1,9 +1,13 @@
-package com.ajiew.autopunchding.service;
+package com.cfy.autopunchding.service;
 
 import android.app.IntentService;
 import android.app.KeyguardManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,14 +17,13 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.ajiew.autopunchding.common.Com;
-import com.ajiew.autopunchding.email.EmaiUtil;
-import com.ajiew.autopunchding.event.PunchFinishedEvent;
-import com.ajiew.autopunchding.event.PunchType;
-import com.ajiew.autopunchding.util.AppUtil;
-import com.ajiew.autopunchding.util.OkHttpUtil;
-import com.ajiew.autopunchding.util.SharpData;
-import com.ajiew.autopunchding.util.ToastUtil;
+import com.cfy.autopunchding.common.Com;
+import com.cfy.autopunchding.email.EmaiUtil;
+import com.cfy.autopunchding.event.PunchFinishedEvent;
+import com.cfy.autopunchding.event.PunchType;
+import com.cfy.autopunchding.util.OkHttpUtil;
+import com.cfy.autopunchding.util.SharpData;
+import com.cfy.autopunchding.util.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -40,13 +43,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static com.ajiew.autopunchding.common.Com.DD_PACKAGE_NAME;
-import static com.ajiew.autopunchding.util.AppUtil.clickXY;
-import static com.ajiew.autopunchding.util.AppUtil.close;
-import static com.ajiew.autopunchding.util.AppUtil.inputEvent;
-import static com.ajiew.autopunchding.util.AppUtil.screencap;
-import static com.ajiew.autopunchding.util.AppUtil.stopApp;
-import static com.ajiew.autopunchding.util.AppUtil.swipe;
+import static com.cfy.autopunchding.common.Com.DD_PACKAGE_NAME;
+import static com.cfy.autopunchding.util.AppUtil.clickXY;
+import static com.cfy.autopunchding.util.AppUtil.close;
+import static com.cfy.autopunchding.util.AppUtil.inputEvent;
+import static com.cfy.autopunchding.util.AppUtil.playCardOppR9s;
+import static com.cfy.autopunchding.util.AppUtil.screencap;
+import static com.cfy.autopunchding.util.AppUtil.startDingDing;
+import static com.cfy.autopunchding.util.AppUtil.stopApp;
+import static com.cfy.autopunchding.util.AppUtil.swipe;
 
 public class PunchService extends IntentService {
 
@@ -92,55 +97,9 @@ public class PunchService extends IntentService {
         }
         Log.d(this.getClass().getSimpleName(), "onHandleIntent: start punching...");
 
-        // 唤醒屏幕
-        wakeUp();
-        // 上滑解锁
-        swipe("300", "1000", "300", "500");
-        SystemClock.sleep(1000);
+        playCardOppR9s(punchType);
 
-//        // 输入 PIN 码解锁
-//        inputPinIfNeeded();
-//        SystemClock.sleep(3000);
-
-        showToast("打开钉钉");
-        startAppLauncher(DD_PACKAGE_NAME);
-        SystemClock.sleep(8000);
-
-        showToast("点击中间菜单");
-        clickXY("537", "1822");
-        SystemClock.sleep(5000);
-
-        showToast("点击考勤打卡");
-        clickXY("130", "1113");
-        SystemClock.sleep(8000);
-
-        showToast("点击打卡");
-        clickXY("528", punchPositionY);
-        SystemClock.sleep(800);
-        screencap();
-        SystemClock.sleep(5000);
-
-//        showToast("点击拍照");
-//        clickXY("710", "2280");
-//        SystemClock.sleep(8000);
-//
-//        showToast("点击 OK");
-//        clickXY("710", "2281");
-//        SystemClock.sleep(5000);
-
-        startAppLauncher(getPackageName());
-
-        // 更新 UI
-        String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date());
-        EventBus.getDefault().post(new PunchFinishedEvent(punchType, currentTime));
-        Log.d(this.getClass().getSimpleName(), "onHandleIntent: punch finished");
-        SharpData.setWorkStatus(getApplicationContext(), punchType == PunchType.CLOCK_IN ? 1 : 2);
-
-        EmaiUtil.sendMsgImage("打卡通知", "438653638@qq.com");
-        SystemClock.sleep(10000);
-        stopApp(DD_PACKAGE_NAME);
-        screenOff();
-        close();
+        SharpData.setWorkStatus(getApplicationContext(), SharpData.getWorkStatus(getApplicationContext()) + (punchType == PunchType.CLOCK_IN ? 1 : 2));
 
         stopSelf();
     }
@@ -163,7 +122,7 @@ public class PunchService extends IntentService {
         if (hourOfDay == 8 && minute > 10) {
             punchType = PunchType.CLOCK_IN;
             punchPositionY = "920";
-            if(SharpData.getWorkStatus(getApplicationContext()) == 1){
+            if(SharpData.getWorkStatus(getApplicationContext()) >= 1){
                 Log.d("CLOCK_IN:","已打上班卡");
                 return false;
             }
@@ -178,7 +137,7 @@ public class PunchService extends IntentService {
         if (hourOfDay >= 18) {
             punchType = PunchType.CLOCK_OUT;
             punchPositionY = "1550";
-            if(SharpData.getWorkStatus(getApplicationContext()) == 2){
+            if(SharpData.getWorkStatus(getApplicationContext()) >= 2){
                 Log.d("CLOCK_OUT:","已打下班卡");
                 return false;
             }
@@ -328,7 +287,7 @@ public class PunchService extends IntentService {
                     return;
                 }
             }
-            String netHoliday = OkHttpUtil.getInstence().get(Com.holidayUpdateUrl+yearCurrent);
+            String netHoliday = OkHttpUtil.getInstance().get(Com.holidayUpdateUrl+yearCurrent);
             JSONObject jsonNetHoliday = new JSONObject(netHoliday);
             if (0 == jsonNetHoliday.getInt("code")) {
                 JSONArray days = new JSONArray();
