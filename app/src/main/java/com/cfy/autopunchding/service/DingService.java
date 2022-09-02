@@ -19,6 +19,9 @@ import java.util.TimeZone;
 
 import it.sauronsoftware.cron4j.Scheduler;
 
+/**
+ * 任务调度方式
+ */
 public class DingService extends Service {
     @Nullable
     @Override

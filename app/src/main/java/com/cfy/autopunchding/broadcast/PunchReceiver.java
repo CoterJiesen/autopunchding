@@ -13,6 +13,7 @@ import com.cfy.autopunchding.util.AppUtil;
  * created on: 2018/9/9 15:33
  * description:
  */
+@Deprecated
 public class PunchReceiver extends BroadcastReceiver {
 
     @Override
