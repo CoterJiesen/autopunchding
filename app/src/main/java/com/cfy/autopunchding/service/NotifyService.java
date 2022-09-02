@@ -13,7 +13,11 @@ import android.util.Log;
 import com.cfy.autopunchding.common.Com;
 import com.cfy.autopunchding.email.EmaiUtil;
 import com.cfy.autopunchding.event.PunchType;
+import com.cfy.autopunchding.event.TaskEvent;
+import com.cfy.autopunchding.event.TaskType;
 import com.cfy.autopunchding.util.SharpData;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -166,6 +170,12 @@ public class NotifyService extends NotificationListenerService {
                 PunchType punchType =  PunchType.CLOCK_OUT;
                 punchIntent.putExtra(EXTRA_PUNCH_TYPE, punchType);
                 startService(punchIntent);
+            }
+            if (text.contains("开启任务")) {
+                EventBus.getDefault().post(new TaskEvent(TaskType.ON, "开启调度任务"));
+            }
+            if (text.contains("关闭任务")) {
+                EventBus.getDefault().post(new TaskEvent(TaskType.OFF, "关闭调度任务"));
             }
         }
     }

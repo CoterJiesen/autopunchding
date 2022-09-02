@@ -9,9 +9,15 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.cfy.autopunchding.event.PunchFinishedEvent;
 import com.cfy.autopunchding.event.PunchType;
+import com.cfy.autopunchding.event.TaskEvent;
+import com.cfy.autopunchding.event.TaskType;
 import com.cfy.autopunchding.util.HolidayUtil;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
@@ -48,6 +54,7 @@ public class DingService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().post(new TaskEvent(TaskType.NULL, "关闭调度任务"));
         Log.e(getPackageName(), "scheduler.onDestroy");
     }
 
@@ -67,12 +74,16 @@ public class DingService extends Service {
                     Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.CHINA);
                     int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
                     int minus = hourOfDay == 8 ? new Random().nextInt(28):new Random().nextInt(160);
+                    calendar.add(Calendar.MINUTE, minus);
+                    String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(calendar.getTime());
+                    EventBus.getDefault().post(new TaskEvent(TaskType.NULL, "打卡时间：" + date));
                     Log.e(getPackageName(), "等待?分钟开始打卡：" + minus);
                     SystemClock.sleep(minus * 1000 * 60);
                     playCardOppR9s(hourOfDay == 8 ? PunchType.CLOCK_IN : PunchType.CLOCK_OUT);
                 }
             });
             scheduler.start();
+            EventBus.getDefault().post(new TaskEvent(TaskType.NULL, "开始调度任务"));
             Log.e(getPackageName(), "开始调度任务");
         }
     }

@@ -182,4 +182,16 @@ public class AppUtil {
         close();
     }
 
+    public static void requestRoot() {
+        String cmd = "input tap 200 200 \n";
+        try {
+            OutputStream os = Runtime.getRuntime().exec("su").getOutputStream();
+            os.write(cmd.getBytes());
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

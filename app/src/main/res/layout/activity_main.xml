@@ -12,21 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="自动打卡服务已开启"
+        android:text="确保手机管家开启自起动"
         android:textSize="12sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.v7.widget.AppCompatButton
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="manualPunch"
-        android:padding="16dp"
-        android:text="手 动 打 卡"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -46,16 +33,52 @@
         android:id="@+id/tv_clock_out_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/tv_clock_in_time"
         tools:text="下班打卡完毕：2018-09-05 17:10:48" />
 
+    <TextView
+        android:id="@+id/mTextTip"
+        android:layout_width="414dp"
+        android:layout_height="23dp"
+        android:layout_marginBottom="360dp"
+        android:gravity="center"
+        android:text="tip"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_info"
+        app:layout_constraintVertical_bias="0.332" />
+
     <Button
-        android:id="@+id/button_start_service"
+        android:id="@+id/button_check_permission"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:text="权限检查"
+        app:layout_constraintStart_toStartOf="@+id/mTextTip"
+        app:layout_constraintTop_toBottomOf="@+id/mTextTip" />
+
+    <Button
+        android:id="@+id/appCompatButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:onClick="manualPunch"
+        android:text="手 动 "
+        app:layout_constraintStart_toStartOf="@+id/button_check_permission"
+        app:layout_constraintTop_toBottomOf="@+id/button_check_permission" />
+
+    <Switch
+        android:id="@+id/switch_auto_playcard"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="开启服务,手机管家开启自起动"
-        tools:layout_editor_absoluteX="138dp"
-        tools:layout_editor_absoluteY="254dp" />
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:text="开启服务"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/appCompatButton"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatButton"
+        app:layout_constraintVertical_bias="0.0" />
 </android.support.constraint.ConstraintLayout>

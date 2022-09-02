@@ -1,27 +1,29 @@
 package com.cfy.autopunchding;
 
 import static com.cfy.autopunchding.common.Com.EXTRA_PUNCH_TYPE;
+import static com.cfy.autopunchding.util.AppUtil.requestRoot;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.NotificationManagerCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cfy.autopunchding.event.PunchFinishedEvent;
 import com.cfy.autopunchding.event.PunchType;
-import com.cfy.autopunchding.service.DingService;
+import com.cfy.autopunchding.event.TaskEvent;
+import com.cfy.autopunchding.event.TaskType;
 import com.cfy.autopunchding.service.DingService;
 import com.cfy.autopunchding.service.KeepRunningService;
 import com.cfy.autopunchding.service.ManualPunchService;
@@ -31,7 +33,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Set;
 
@@ -39,10 +40,13 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 9527;
 
     private Button btnActivity;
+    private Switch btnSwitchService;
 
     private TextView tvClockInTime;
 
     private TextView tvClockOutTime;
+
+    private TextView tvTip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         initView();
 
         startService(new Intent(this, KeepRunningService.class));
-        startService(new Intent(this, DingService.class));
     }
 
     @Override
@@ -71,27 +74,28 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         tvClockInTime = findViewById(R.id.tv_clock_in_time);
         tvClockOutTime = findViewById(R.id.tv_clock_out_time);
-        btnActivity = (Button) findViewById(R.id.button_start_service);//与Activity的XML中对应的ID绑定
-        btnActivity.setOnClickListener(new View.OnClickListener() {//设置OnClickListener事件（JAVA没事件？）
-            @Override
-            public void onClick(View v) {
-                requestRoot();
-                requestPermission();
+        btnActivity = (Button) findViewById(R.id.button_check_permission);//与Activity的XML中对应的ID绑定
+        btnSwitchService = (Switch) findViewById(R.id.switch_auto_playcard);//与Activity的XML中对应的ID绑定
+        tvTip = (TextView) findViewById(R.id.mTextTip);//与Activity的XML中对应的ID绑定
+        //设置OnClickListener事件（JAVA没事件？）
+        btnActivity.setOnClickListener(v -> {
+            requestRoot();
+            requestPermission();
+        });
+        btnSwitchService.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Intent intent=new Intent();
+            intent.setClass(this,DingService.class);
+            if (isChecked){
+                startService(intent);
+                tvTip.setText("开启");
+            }else {
+                stopService(intent);
+                tvTip.setText("关闭");
             }
         });
+
     }
 
-    private void requestRoot() {
-        String cmd = "input tap 200 200 \n";
-        try {
-            OutputStream os = Runtime.getRuntime().exec("su").getOutputStream();
-            os.write(cmd.getBytes());
-            os.flush();
-            os.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * 开始打卡点击事件
@@ -115,8 +119,23 @@ public class MainActivity extends AppCompatActivity {
             text = getString(R.string.punch_clock_out_time, event.getTime());
             tvClockOutTime.setText(text);
         }
-
         Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTipView(TaskEvent event) {
+        if (event.getTaskType() == TaskType.ON) {
+            if(!btnSwitchService.isChecked()) {
+                btnSwitchService.setChecked(true);
+                switchService(true);
+            }
+        } else if (event.getTaskType() == TaskType.OFF) {
+            if(btnSwitchService.isChecked()){
+                btnSwitchService.setChecked(false);
+                switchService(false);
+            }
+        }
+        tvTip.setText(event.getTip());
     }
 
     @Override
@@ -183,6 +202,18 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void switchService(boolean isChecked){
+        Intent intent=new Intent();
+        intent.setClass(this,DingService.class);
+        if (isChecked){
+            startService(intent);
+            tvTip.setText("开启");
+        }else {
+            stopService(intent);
+            tvTip.setText("关闭");
         }
     }
 }
