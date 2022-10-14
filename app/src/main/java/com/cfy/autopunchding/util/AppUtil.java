@@ -153,20 +153,25 @@ public class AppUtil {
         // 上滑解锁
         swipe("300", "1000", "300", "500");
         SystemClock.sleep(10000);
+        stopApp(DD_PACKAGE_NAME);
+        SystemClock.sleep(1000);
         // 返回桌面
         inputEvent("3");
-        SystemClock.sleep(2000);
+        SystemClock.sleep(20000);
 
         startDingDing();
-        SystemClock.sleep(2000);
-
-        clickXY("537", "1822");
         SystemClock.sleep(20000);
 
-        clickXY("130", "1113");
+        //点击 企业中间菜单
+        clickXY("543", "1821");
         SystemClock.sleep(20000);
 
-        clickXY("528", "1154");
+        //点击考勤打卡按钮
+        clickXY("130", "1120");
+        SystemClock.sleep(20000);
+
+        //点击打卡
+        clickXY("547", "1207");
         SystemClock.sleep(2000);
         screencap();
         SystemClock.sleep(20000);
