@@ -149,7 +149,7 @@ public class AppUtil {
     public static void playCardOppR9s(PunchType punchType) {
         // 唤醒屏幕
         inputEvent("224");
-
+        SystemClock.sleep(2000);
         // 上滑解锁
         swipe("300", "1000", "300", "500");
         SystemClock.sleep(10000);
